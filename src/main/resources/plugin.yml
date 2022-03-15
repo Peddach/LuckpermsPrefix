@@ -1,0 +1,8 @@
+name: LuckPermsPrefix
+author: FaidHD
+api-version: 1.16
+main: de.faidhd.prefix.Prefix
+version: 1.0
+
+commands:
+  prefix:
