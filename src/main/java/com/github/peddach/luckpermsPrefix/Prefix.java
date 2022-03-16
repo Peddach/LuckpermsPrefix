@@ -12,10 +12,15 @@ import com.github.peddach.luckpermsPrefix.utils.PrefixManager;
 public class Prefix extends JavaPlugin {
 	private PrefixManager prefixManager;
 	private Data data;
+	private static Prefix plugin;
 
 	public void onEnable() {
-		this.prefixManager = new PrefixManager(this);
+		plugin = this;
+		plugin.saveDefaultConfig();
+		plugin.saveConfig();
+		plugin.reloadConfig();
 		this.data = new Data(this);
+		this.prefixManager = new PrefixManager(this);
 		initListeners();
 		initCommands();
 	}
@@ -37,5 +42,9 @@ public class Prefix extends JavaPlugin {
 
 	public Data getData() {
 		return this.data;
+	}
+
+	public static Prefix getPlugin() {
+		return plugin;
 	}
 }

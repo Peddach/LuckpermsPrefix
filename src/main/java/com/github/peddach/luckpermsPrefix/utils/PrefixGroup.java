@@ -2,6 +2,10 @@ package com.github.peddach.luckpermsPrefix.utils;
 
 import org.bukkit.scoreboard.Team;
 
+import com.github.peddach.luckpermsPrefix.Prefix;
+
+import net.kyori.adventure.text.Component;
+
 public class PrefixGroup {
 	private Team team;
 	private String name;
@@ -17,10 +21,10 @@ public class PrefixGroup {
 		this.rank = rank;
 		this.chatColor = chatColor;
 		this.team = prefixManager.getScoreboard().registerNewTeam(rank + name);
-		this.team.setPrefix(tabPrefix.replaceAll("&", "§"));
-		System.out.println("ID: " + rank);
-		System.out.println("Name: " + name);
-		System.out.println("Prefix: " + tabPrefix);
+		this.team.prefix(Component.text(tabPrefix.replaceAll("&", "§")));
+		Prefix.getPlugin().getLogger().info("ID: " + rank);
+		Prefix.getPlugin().getLogger().info("Name: " + name);
+		Prefix.getPlugin().getLogger().info("Prefix: " + tabPrefix);
 	}
 
 	public Team getTeam() {

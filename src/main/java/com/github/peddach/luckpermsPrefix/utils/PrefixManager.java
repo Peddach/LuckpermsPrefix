@@ -1,14 +1,15 @@
 package com.github.peddach.luckpermsPrefix.utils;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.group.Group;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -24,8 +25,7 @@ public class PrefixManager {
 	private ArrayList<PrefixGroup> prefixGroups;
 	private Scoreboard scoreboard;
 	private String format;
-	private File file;
-	private FileConfiguration cfg;
+	private FileConfiguration cfg = Prefix.getPlugin().getConfig();
 
 	public PrefixManager(Prefix plugin) {
 		RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
@@ -36,29 +36,23 @@ public class PrefixManager {
 			return;
 		}
 		this.plugin = plugin;
-		this.file = new File("plugins/Prefix", "config.yml");
 		loadGroups();
 	}
 
 	public void loadGroups() {
-		this.cfg = (FileConfiguration) YamlConfiguration.loadConfiguration(this.file);
-		if (!this.file.exists()) {
-			this.cfg.set("chatFormat", "%prefix%%player% &8» %chatcolor%");
-			for (Group group : this.api.getGroupManager().getLoadedGroups()) {
-				this.cfg.set("Groups." + group.getName() + ".TabPrefix", group.getCachedData().getMetaData().getPrefix());
-				this.cfg.set("Groups." + group.getName() + ".ChatPrefix", group.getCachedData().getMetaData().getPrefix());
-				String rank = "00";
-				if (group.getWeight().isPresent())
-					rank = (group.getWeight().getAsInt() > 9) ? String.valueOf(group.getWeight().getAsInt()) : ("0" + group.getWeight().getAsInt());
-				this.cfg.set("Groups." + group.getName() + ".Rank", rank);
-				this.cfg.set("Groups." + group.getName() + ".ChatColor", "&7");
-			}
-			try {
-				this.cfg.save(this.file);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		this.cfg.set("chatFormat", "%prefix%%player% &7: %chatcolor%");
+		for (Group group : this.api.getGroupManager().getLoadedGroups()) {
+			this.cfg.set("Groups." + group.getName() + ".TabPrefix", group.getCachedData().getMetaData().getPrefix());
+			this.cfg.set("Groups." + group.getName() + ".ChatPrefix", group.getCachedData().getMetaData().getPrefix());
+			String rank = "00";
+			if (group.getWeight().isPresent())
+				rank = (group.getWeight().getAsInt() > 9) ? String.valueOf(group.getWeight().getAsInt()) : ("0" + group.getWeight().getAsInt());
+			this.cfg.set("Groups." + group.getName() + ".Rank", rank);
+			this.cfg.set("Groups." + group.getName() + ".ChatColor", "&7");
 		}
+		Prefix.getPlugin().saveConfig();
+		Prefix.getPlugin().reloadConfig();
+
 		this.format = this.cfg.getString("chatFormat");
 		this.prefixGroups = new ArrayList<>();
 		this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -91,11 +85,14 @@ public class PrefixManager {
 				PrefixManager.this.removePlayerFromAllTeams(player);
 				Team team = PrefixManager.this.getPrefixGroup(player).getTeam();
 				team.addPlayer((OfflinePlayer) player);
-				String displayName = team.getPrefix() + player.getName();
-				for (Player a : Bukkit.getOnlinePlayers())
+				//String displayName = team.getPrefix() + player.getName();
+				Component displayName = team.prefix().replaceText(TextReplacementConfig.builder().match("&").replacement("§").build());
+				for (Player a : Bukkit.getOnlinePlayers()) {
 					a.setScoreboard(PrefixManager.this.scoreboard);
-				player.setDisplayName(displayName.replaceAll("&", "§"));
-				player.setPlayerListName(displayName.replaceAll("&", "§"));
+				}
+				player.displayName(displayName);
+				//player.setPlayerListName(displayName.replaceAll("&", "§")); Old code
+				player.playerListName(displayName);
 			}
 		}).runTaskLater((Plugin) this.plugin, 2L);
 	}
@@ -106,8 +103,9 @@ public class PrefixManager {
 
 	public void removePlayerFromAllTeams(Player player) {
 		for (Team team : this.scoreboard.getTeams()) {
-			if (team.getPlayers().contains(player))
+			if(team.getEntries().contains(player.getName())) {
 				team.removePlayer((OfflinePlayer) player);
+			}
 		}
 	}
 
