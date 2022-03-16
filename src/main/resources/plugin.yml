@@ -1,8 +1,12 @@
 name: LuckPermsPrefix
-author: FaidHD
-api-version: 1.16
-main: de.faidhd.prefix.Prefix
-version: 1.0
-
+authors:
+- FaidHD
+- ProfessorSam
+api-version: 1.18
+main: com.github.peddach.luckpermsPrefix.Prefix
+version: 1.1.1
+description: Add chat prefixes and tablist prefixes from Luckperms
+depend:
+- LuckPerms
 commands:
-  prefix:
+   prefix: 
