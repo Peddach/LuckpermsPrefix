@@ -3,11 +3,11 @@ package com.github.peddach.luckpermsPrefix.utils;
 import java.util.ArrayList;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.group.Group;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -85,14 +85,12 @@ public class PrefixManager {
 				PrefixManager.this.removePlayerFromAllTeams(player);
 				Team team = PrefixManager.this.getPrefixGroup(player).getTeam();
 				team.addPlayer((OfflinePlayer) player);
-				//String displayName = team.getPrefix() + player.getName();
-				Component displayName = team.prefix().replaceText(TextReplacementConfig.builder().match("&").replacement("§").build());
+				String displayName = team.getPrefix() + player.getName();
 				for (Player a : Bukkit.getOnlinePlayers()) {
 					a.setScoreboard(PrefixManager.this.scoreboard);
 				}
-				player.displayName(displayName);
-				//player.setPlayerListName(displayName.replaceAll("&", "§")); Old code
-				player.playerListName(displayName);
+				//player.displayName(Component.text(ChatColor.translateAlternateColorCodes('&', displayName)));
+				player.playerListName(Component.text(ChatColor.translateAlternateColorCodes('&', displayName)));
 			}
 		}).runTaskLater((Plugin) this.plugin, 2L);
 	}
