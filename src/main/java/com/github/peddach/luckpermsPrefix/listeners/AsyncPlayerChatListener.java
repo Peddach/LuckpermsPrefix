@@ -1,16 +1,12 @@
 package com.github.peddach.luckpermsPrefix.listeners;
 
-import java.util.regex.Pattern;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
 
-import com.destroystokyo.paper.Title.Builder;
 import com.github.peddach.luckpermsPrefix.Prefix;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
