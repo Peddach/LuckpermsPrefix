@@ -44,9 +44,13 @@ public class PrefixManager {
 		for (Group group : this.api.getGroupManager().getLoadedGroups()) {
 			this.cfg.set("Groups." + group.getName() + ".TabPrefix", group.getCachedData().getMetaData().getPrefix());
 			this.cfg.set("Groups." + group.getName() + ".ChatPrefix", group.getCachedData().getMetaData().getPrefix());
-			String rank = "00";
-			if (group.getWeight().isPresent())
-				rank = (group.getWeight().getAsInt() > 9) ? String.valueOf(group.getWeight().getAsInt()) : ("0" + group.getWeight().getAsInt());
+			String rank = "zzzzz";
+			if (group.getWeight().isPresent()) {
+				// rank = (group.getWeight().getAsInt() > 9) ?
+				// String.valueOf(group.getWeight().getAsInt()) : ("0" +
+				// group.getWeight().getAsInt());
+				rank = getLetterFromAlphabet(group.getWeight().getAsInt());
+			}
 			this.cfg.set("Groups." + group.getName() + ".Rank", rank);
 			this.cfg.set("Groups." + group.getName() + ".ChatColor", "&7");
 		}
@@ -100,7 +104,7 @@ public class PrefixManager {
 
 	public void removePlayerFromAllTeams(Player player) {
 		for (Team team : this.scoreboard.getTeams()) {
-			if(team.getEntries().contains(player.getName())) {
+			if (team.getEntries().contains(player.getName())) {
 				team.removePlayer((OfflinePlayer) player);
 			}
 		}
@@ -112,6 +116,19 @@ public class PrefixManager {
 				return group;
 		}
 		return null;
+	}
+
+	private String getLetterFromAlphabet(int number) {
+		//String[] abc = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" };
+		String[] abc = { "j", "i", "h", "g", "f", "e", "d", "c", "b", "a" };
+		String[] input = String.valueOf(number).split("");
+		String output = "";
+		for (int i = 0; i < input.length; i++) {
+			int n = Integer.parseInt(input[i]);
+			output = output + abc[n];
+		}
+		return output;
+
 	}
 
 	public ArrayList<PrefixGroup> getPrefixGroups() {
