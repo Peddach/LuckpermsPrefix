@@ -40,7 +40,7 @@ public class PrefixManager {
 	}
 
 	public void loadGroups() {
-		this.cfg.set("chatFormat", "%prefix%%player% &7: %chatcolor%");
+		this.cfg.set("chatFormat", "%prefix%%player%&7: %chatcolor%");
 		for (Group group : this.api.getGroupManager().getLoadedGroups()) {
 			this.cfg.set("Groups." + group.getName() + ".TabPrefix", group.getCachedData().getMetaData().getPrefix());
 			this.cfg.set("Groups." + group.getName() + ".ChatPrefix", group.getCachedData().getMetaData().getPrefix());
@@ -89,7 +89,6 @@ public class PrefixManager {
 				for (Player a : Bukkit.getOnlinePlayers()) {
 					a.setScoreboard(PrefixManager.this.scoreboard);
 				}
-				//player.displayName(Component.text(ChatColor.translateAlternateColorCodes('&', displayName)));
 				player.playerListName(Component.text(ChatColor.translateAlternateColorCodes('&', displayName)));
 			}
 		}).runTaskLater((Plugin) this.plugin, 2L);
